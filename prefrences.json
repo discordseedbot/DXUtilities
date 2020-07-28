@@ -1,11 +1,7 @@
 {
     "prefix": {
         "default": "s!",
-        "dev": "s~",
-        "music": "s?",
-        "math": "s!math",
-        "dmoj": "s!dmoj",
-        "youtube": "s!yt"
+        "dev": "s~"
     },
     "developer_notif": {
         "developer": {
@@ -17,5 +13,5 @@
             "error": "72018793426282a0955",
             "notifications": "720187870933024829"
         }
-    }        
+    }
 }
