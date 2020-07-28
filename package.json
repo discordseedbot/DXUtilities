@@ -4,7 +4,8 @@
   "description": "Utility Discord Bot for DARiOX Partnered Servers",
   "main": "index.js",
   "scripts": {
-    "test": "node ."
+    "test": "node . --test",
+	"start": "node ."
   },
   "repository": {
     "type": "git",
