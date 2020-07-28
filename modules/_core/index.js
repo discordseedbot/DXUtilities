@@ -6,8 +6,7 @@ module.exports.misc_randHex = function() {
 }
 
 module.exports.consoleInit = function() {
-	let tmp = require("./signale_util.js");
-	tmp();
+	require("./signale_util.js")();
 	delete(tmp);
 }
 
