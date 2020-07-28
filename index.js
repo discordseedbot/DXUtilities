@@ -18,7 +18,7 @@ try {
 	global.SB_Prefrences = require("./prefrences.json");
 	global.signale = require("signale");
 } catch (e) {
-	signale.error("An error Occoured when declaring [GlobalVariables]");
+	require("signale").error("An error Occoured when declaring [GlobalVariables]");
 	console.error(e);
 	process.exit(1);
 }
