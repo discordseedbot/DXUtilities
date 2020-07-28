@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node . --test",
-	"start": "node ."
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,11 @@
   "bugs": {
     "url": "https://github.com/discordseedbot/DXUtil/issues"
   },
-  "homepage": "https://github.com/discordseedbot/DXUtil#readme"
+  "homepage": "https://github.com/discordseedbot/DXUtil#readme",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "fs": "0.0.1-security",
+    "inquirer": "^7.3.3",
+    "signale": "^1.4.0"
+  }
 }
