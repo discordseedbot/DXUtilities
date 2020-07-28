@@ -1,7 +1,6 @@
 {
     "prefix": {
-        "default": "s!",
-        "dev": "s~"
+        "default": "+"
     },
     "developer_notif": {
         "developer": {
@@ -9,9 +8,20 @@
             "notifications": "720187664120152114",
             "unauthAccess": "720566055445069864"
         },
-            "userspaceError": {
+        "userspaceError": {
             "error": "72018793426282a0955",
             "notifications": "720187870933024829"
         }
-    }
+    },
+	"archive": {
+		"guilds": [
+			{
+				"id": "423433970810748960",
+				"archive_channel": "737598935274619020"
+			}
+		],
+		"allowed_users": [
+			"230485481773596672"
+		]
+	}
 }
