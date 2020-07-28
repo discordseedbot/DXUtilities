@@ -1,0 +1,26 @@
+{
+  "name": "dxutil",
+  "version": "0.0.1",
+  "description": "Utility Discord Bot for DARiOX Partnered Servers",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discordseedbot/DXUtil.git"
+  },
+  "keywords": [
+    "dariox",
+    "utility",
+    "discord",
+    "bot",
+    "seedbot"
+  ],
+  "author": "SeedBot Contributers [seedbot@cock.li]",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/discordseedbot/DXUtil/issues"
+  },
+  "homepage": "https://github.com/discordseedbot/DXUtil#readme"
+}
