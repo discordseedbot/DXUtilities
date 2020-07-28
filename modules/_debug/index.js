@@ -24,6 +24,6 @@ module.exports = function() {
 
     SB_Client.on('message', async message => {
         if (message.author.bot) return;
-        console.log(`[${message.author.id}] - ${message.content}`)
+        console.log("\n" + `[${message.author.id}] - ${message.content}`)
     })
 }
