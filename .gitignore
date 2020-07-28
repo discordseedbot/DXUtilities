@@ -106,3 +106,4 @@ dist
 
 # SeedBot
 token.json
+package-lock.json
