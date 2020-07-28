@@ -17,7 +17,7 @@ module.exports.user = async function(ca) {
             termcon.returnValue(SB_CoreLibrary.userCount());
             break;
         default:
-            SB_Client.users.fetch(ca[2])
+            SB_Client.users.cache.fetch(ca[2])
                 .then(info => termcon.returnValue(info) )
                 .catch(error => apiErrorCheck(error) )
             break;
@@ -41,7 +41,7 @@ module.exports.channel = async function(ca) {
 
 function guildList() {
     let tmplist;
-    SB_Client.guilds.array().sort().toString().split(",").forEach(async (m) => {
+    SB_Client.guilds.cache.array().sort().toString().split(",").forEach(async (m) => {
         tmplist+= `${m}`;
         if (m !== tmplist[tmplist.length - 1]) {
             tmplist+="\n";
@@ -56,7 +56,7 @@ module.exports.guild = async function(ca) {
             termcon.returnValue(SB_CoreLibrary.guildCount())
             break;
         case "list":
-            termcon.returnValue(guildList().Promise);
+            termcon.returnValue(guildList());
             break;
         default:
             if (ca[2] === undefined) {
