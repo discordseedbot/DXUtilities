@@ -15,7 +15,6 @@ module.exports = async function() {
             switch (command) {
                 case "warn":
                     var MGR = message.mentions.users.first();
-					console.log(MGR);
 					var currentWarn=0;
 					var whatWarnsUserHas=[];
 					var serverWarnRoles=[];
