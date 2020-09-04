@@ -10,14 +10,10 @@ module.exports = async function() {
         var args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
 
-		var prefrences = SB_Prefrences.archive
-
+		var prefrences = SB_Prefrences.archive;
         try {
             switch (command) {
                 case "archive":
-
-
-
 					var allow = {"validGuild": false,"validSelectedChannel":false,"allowUser":false,"categoryExists":false};
 					if (prefrences.allowed_users.indexOf(message.author.id) < -1) {
 						// user not allowed
