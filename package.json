@@ -1,6 +1,6 @@
 {
 	"name": "dxutil",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Utility Discord Bot for DARiOX Partnered Servers",
 	"main": "index.js",
 	"scripts": {
@@ -28,6 +28,8 @@
 		"discord.js": "^12.2.0",
 		"fs": "0.0.1-security",
 		"inquirer": "^7.3.3",
-		"signale": "^1.4.0"
+		"seedbot_addonmusic": "^13.9.11",
+		"signale": "^1.4.0",
+		"ytsearcher": "^1.2.2"
 	}
 }
