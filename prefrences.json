@@ -1,6 +1,7 @@
 {
     "prefix": {
-        "default": "+"
+        "default": "+",
+		"music": "+m"
     },
     "developer_notif": {
         "developer": {
