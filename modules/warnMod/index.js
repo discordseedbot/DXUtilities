@@ -1,16 +1,18 @@
 const prefix = SB_CoreLibrary.prefix().default;
+const Discord = require("discord.js")
 
 var responses = {
 	kickedFromWarnLimit: {
 		channel: "$user$ has been kicked due to exceding the warn limit.",
 		userKicked: "You have been kicked from $server$ by $warnedBy$ due to exceding the warn limit, send them a message to get back in the server.",
-		auditReason: "Exceded Warn Limit [from $warnedBy$]",
+		auditReason: "Exceded Warn Limit [from $warnedBy$] $warnReason$",
 	},
 	warned: {
 		channel: "$user$ has been warned, you have $chancesLeft$ chances left.",
-		userWarned: "You have been warned on $server$, you have $chancesLeft$ chances left.",
+		userWarned: "You have been warned on $server$, you have $chancesLeft$ chances left.\r\nIf you disagree with this action please message the moderators in <#754018959036121148>.",
 	}
 };
+
 
 module.exports = async function() {
 
@@ -20,14 +22,28 @@ module.exports = async function() {
         var args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
 
+		//filter(string,currentWarn,warnReason,MGR)
+		function filter(string,currentWarn,warnReason,MGR) {
+			return string.replace("$server$",message.guild.name)
+						.replace("$warnedBy$",`<@${message.author.id}>`)
+						.replace("$user$",`<@${MGR.id}>`)
+						.replace("$chancesLeft$",3-currentWarn)
+						.replace("$warnReason$",warnReason)
+		}
 
         try {
             switch (command) {
                 case "warn":
                     var MGR = message.mentions.users.first();
+					var warnReason = " ";
+					if (args[1] !== undefined) {
+						warnReason = args[1];
+					}
 					var currentWarn=0;
 					var whatWarnsUserHas=[];
 					var serverWarnRoles=[];
+
+					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: false, checkOwner: false })) return message.reply("you don't have permission bossman");
 					message.guild.roles.cache.forEach((r)=>{
 						if (r.name.search(/(warn|warning)(| )[1-3]/i)>=0) {
 							serverWarnRoles[r.name.substr(r.name.length - 1)-1]=
@@ -50,11 +66,12 @@ module.exports = async function() {
 						}
 					})
 					if (currentWarn == 3){
-						if (!message.guild.member(MGR).kickable) return message.reply("can't kick!");
-						message.guild.member(MGR).kick(reasons.kickedFromWarnLimit.auditReason.replace("$warnedBy$",message.author.name)).then((km)=>{
-							message.channel.send(responses.kickedFromWarnLimit.channel.replace("$user$",`<@${km.id}>`));
-							SB_Client.users.cache.get(km.id).send(responses.kickedFromWarnLimit.userKicked.replace("$server$",message.guild.name).replace("$warnedBy$",`<@${message.author.id}>`).replace("$user$",`<@${km.id}>`).replace("$chancesLeft$",3-currentWarn));
-						})
+						message.channel.send(`:no_entry_sign: <@${MGR.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
+						/*if (!message.guild.member(MGR).kickable) return message.reply("can't kick!");
+							message.guild.member(MGR).kick(filter(reasons.kickedFromWarnLimit.auditReason,currentWarn,warnReason,MGR)).then((km)=>{
+							message.channel.send(responses.kickedFromWarnLimit.channel);
+							SB_Client.users.cache.get(MGR.id).send(filter(responses.kickedFromWarnLimit.userKicked,currentWarn,warnReason,MGR));
+						})*/
 
 					} else {
 						var warnToGive = (parseInt(currentWarn) + 1).toString();
@@ -62,8 +79,18 @@ module.exports = async function() {
 							if (r.name.charAt(r.name.length-1)==warnToGive.toString()){
 								var rtg = message.guild.roles.cache.find(ra=>ra.id==r.id)
 								message.guild.member(MGR).roles.add(rtg).then(()=>{
-									message.reply(responses.warned.channel.replace("$server$",message.guild.name).replace("$warnedBy$",`<@${message.author.id}>`).replace("$user$",`<@${km.id}>`).replace("$chancesLeft$",3-currentWarn))
-									SB_Client.users.cache.get(MGR.id).send(responses.warned.userWarned.replace("$server$",message.guild.name).replace("$warnedBy$",`<@${message.author.id}>`).replace("$user$",`<@${km.id}>`).replace("$chancesLeft$",3-currentWarn))
+									var warnLogContent = new Discord.MessageEmbed()
+										.setTitle(`${MGR.username} was warned`)
+										.setDescription(`<@${MGR.id}> was warned by <@${message.author.id}>\r\n**reason** - ${warnReason}`)
+										.setTimestamp()
+										.setFooter(`warned by ${message.author.username}#${message.author.discriminator}`);
+									message.reply(filter(responses.warned.channel,currentWarn,warnReason,MGR))
+									SB_Client.users.cache.get(MGR.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,MGR))
+									message.guild.channels.cache.forEach((cj)=>{
+										if (cj.name==="warn-log") {
+											SB_Client.channels.cache.get(cj.id).send(warnLogContent);
+										}
+									})
 								})
 							}
 						})
