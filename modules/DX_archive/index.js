@@ -15,7 +15,22 @@ module.exports = async function() {
             switch (command) {
                 case "archive":
 					var allow = {"validGuild": false,"validSelectedChannel":false,"allowUser":false,"categoryExists":false};
-					if (prefrences.allowed_users.indexOf(message.author.id) < -1) {
+					
+					prefrences.guilds.forEach((gd)=>{
+						if (gd.id == message.guild.id) {
+							gd.allowed_roles.forEach((rhas)=>{
+								message.guild.member(message.author).roles.cache.forEach((mr)=>{
+									if (mr == rhas) {
+										console.log("user has allowed role");
+										allow.allowUser=true;
+										allow.validGuild = true;
+									}
+								})
+							})
+						}
+					})
+					
+					if (allow.allowUser == false || prefrences.allowed_users.indexOf(message.author.id) < -1) {
 						// user not allowed
 						SB_Libraries.forEach(async (m) => {
 							if (m.name === "developer_alerts") {
@@ -52,6 +67,12 @@ module.exports = async function() {
 															.setDescription("This channel no longer has a purpose but it is locked for archival purposes.\n\n" + `Archived by <@${message.author.id}>`)
 															.setTimestamp()
 														SB_Client.channels.cache.get(channel.id).send(embed);
+														channel.overwritePermissions([
+																{
+																	id: message.author.id,
+																	deny: ['SEND_MESSAGES'],
+																},
+															], 'Needed to change permissions');
 														message.author.send(`Channel \`<#${channelIDToMove}>\` has been archived`);
 													})
 											}

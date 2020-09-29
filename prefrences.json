@@ -17,12 +17,25 @@
 	"archive": {
 		"guilds": [
 			{
+				"label": "seeds private server",
 				"id": "423433970810748960",
-				"archive_channel": "737598935274619020"
+				"archive_channel": "737598935274619020",
+				"allowed_roles": [
+					"760458728780070912"
+				]
 			},
 			{
+				"label": "seeds shed",
 				"id": "358228594918555658",
 				"archive_channel": "736163506696486972"
+			},
+			{
+				"label": "private friends server [the gamer hole]",
+				"id": "543016052456685578",
+				"archive_channel": "760176218459865149",
+				"allowed_roles": [
+					"697426350335852636"
+				]
 			}
 		],
 		"allowed_users": [
