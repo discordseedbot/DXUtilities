@@ -28,8 +28,9 @@
 		"discord.js": "^12.2.0",
 		"fs": "0.0.1-security",
 		"inquirer": "^7.3.3",
-		"seedbot_addonmusic": "^13.9.11",
+		"seedbot_addonmusic": "^13.9.15",
 		"signale": "^1.4.0",
+		"ytpl": "^1.0.0",
 		"ytsearcher": "^1.2.2"
 	}
 }
