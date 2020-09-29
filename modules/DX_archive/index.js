@@ -54,8 +54,7 @@ module.exports = async function() {
 								allow.validGuild = true;
 								if (allow.validSelectedChannel) {
 									console.log("channel valid")
-									var channelIDToMove = args[0].substring(2)
-									var channelIDToMove = channelIDToMove.substring(0, channelIDToMove.length -1);
+									var channelIDToMove = args[0].substring(2).substring(0, args[0].substring(2).length -1);
 									if (allow.validGuild) {
 										message.guild.channels.cache.forEach(async (c) => {
 											if (c.type === "category" && c.id === g.archive_channel) {
@@ -67,9 +66,9 @@ module.exports = async function() {
 															.setDescription("This channel no longer has a purpose but it is locked for archival purposes.\n\n" + `Archived by <@${message.author.id}>`)
 															.setTimestamp()
 														SB_Client.channels.cache.get(channel.id).send(embed);
-														channel.overwritePermissions([
+														SB_Client.channels.cache.get(channelIDToMove).overwritePermissions([
 																{
-																	id: message.author.id,
+																	id: message.guild.roles.everyone.id,
 																	deny: ['SEND_MESSAGES'],
 																},
 															], 'Needed to change permissions');
