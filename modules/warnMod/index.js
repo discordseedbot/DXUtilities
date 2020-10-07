@@ -1,4 +1,4 @@
-const prefix = SB_CoreLibrary.prefix().default;
+const prefix = SB.prefix.default;
 const Discord = require("discord.js")
 
 var responses = {
@@ -16,7 +16,7 @@ var responses = {
 
 module.exports = async function() {
 
-    SB_Client.on('message', async message => {
+    SB.client.on('message', async message => {
         if (message.author.bot) return;
         if (message.content.indexOf(prefix) !== 0) return;
         var args = message.content.slice(prefix.length).trim().split(/ +/g);
@@ -70,7 +70,7 @@ module.exports = async function() {
 						/*if (!message.guild.member(MGR).kickable) return message.reply("can't kick!");
 							message.guild.member(MGR).kick(filter(reasons.kickedFromWarnLimit.auditReason,currentWarn,warnReason,MGR)).then((km)=>{
 							message.channel.send(responses.kickedFromWarnLimit.channel);
-							SB_Client.users.cache.get(MGR.id).send(filter(responses.kickedFromWarnLimit.userKicked,currentWarn,warnReason,MGR));
+							SB.client.users.cache.get(MGR.id).send(filter(responses.kickedFromWarnLimit.userKicked,currentWarn,warnReason,MGR));
 						})*/
 
 					} else {
@@ -85,10 +85,10 @@ module.exports = async function() {
 										.setTimestamp()
 										.setFooter(`warned by ${message.author.username}#${message.author.discriminator}`);
 									message.reply(filter(responses.warned.channel,currentWarn,warnReason,MGR))
-									SB_Client.users.cache.get(MGR.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,MGR))
+									SB.client.users.cache.get(MGR.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,MGR))
 									message.guild.channels.cache.forEach((cj)=>{
 										if (cj.name==="warn-log") {
-											SB_Client.channels.cache.get(cj.id).send(warnLogContent);
+											SB.client.channels.cache.get(cj.id).send(warnLogContent);
 										}
 									})
 								})
@@ -98,7 +98,7 @@ module.exports = async function() {
                     break;
             }
         } catch (err) {
-			SB_Libraries.forEach(async (m) => {
+			SB.libraries.forEach(async (m) => {
 				if (m.name === "developer_alerts") {
 					let tmpRequire = require(`./../../${m.location}/${m.main}`).userspaceError(message, err);
 				}
@@ -108,7 +108,7 @@ module.exports = async function() {
     })
 
 
-    SB_Client.on('ready', async () => {
-        botModuleConsole.loaded("Warn Utilities");
+    SB.client.on('ready', async () => {
+        SB.con.module.bot.loaded("Warn Utilities");
     })
 }

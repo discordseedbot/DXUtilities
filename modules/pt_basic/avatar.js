@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const { RichEmbed } = require("discord.js");
-const SB_Client = new Discord.Client();
 const response = require("./response.json");
 
 module.exports.cmd = function(message) {

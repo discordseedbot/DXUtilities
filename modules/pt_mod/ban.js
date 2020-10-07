@@ -26,7 +26,7 @@ module.exports = function(message,args) {
 				text: `Banned by; ${message.author.username}`
 			}
 		}});
-		SB_Client.users.cache.get(userToBan.id).send({embed: {
+		SB.client.users.cache.get(userToBan.id).send({embed: {
 			color: 770000,
 			author: {name:`You were banned from ${message.guild.name}`},
 			fields: [{
