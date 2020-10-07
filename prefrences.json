@@ -41,5 +41,9 @@
 		"allowed_users": [
 			"230485481773596672"
 		]
-	}
+	},
+    "tokenManager": {
+        "enviromentVariable": false,
+        "tokenLocation": "root"
+    }
 }
