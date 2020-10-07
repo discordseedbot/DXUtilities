@@ -1,0 +1,14 @@
+[
+	{
+		"name": "Minecraft Server",
+		"game": "minecraft",
+		"address": "media.dxcdn.net",
+		"port": 25565
+	},
+	{
+		"name": "Source Engine Server",
+		"game": "source_engine",
+		"address": "media.dxcdn.net",
+		"port": 27016
+	}
+]
