@@ -1,16 +1,6 @@
 var me = {};
 
-var res = {
-	"warnChannel": {
-		"undefined": "No warn channel was given, just do # then the channel name in the command, e.g `@DARiOX Utilities [code] warnChannel #warnLog`",
-		"invalid": "Channel given does not exist!",
-		"edited": "Warn channel has been set to %channel%. Whenever somebody is warned a message will be put in there with a info about their warn. For more information check your Partner Guide."
-	},
-	"setup": {
-		"ready": "We're ready to setup your server, read the guide (https://github.com/discordseedbot/DXUtilities/warmMod.md). Your SessionID is `%OTP%`",
-		"error": "An internal error occoured, sorry for the inconvenience!"
-	}
-}
+var res = require("./response.json")
 
 me = function (message){
 
@@ -37,8 +27,8 @@ me.moduleInit = function() {
 		SB.client.settings.warnMod = [];
 
 		SB.client.settings.warnMod = new Enmap({
-			name: "settings",
-			fetchAll: false,
+			name: "warnModSettings",
+			fetchAll: true,
 			autoFetch: true,
 			cloneLevel: 'deep'
 		});
@@ -83,39 +73,10 @@ me.setup = async function(message) {
 		if (args[0] === customIdentifiyer) {
 			switch(args[1].toLowerCase()) {
 				case "warnchannel":
-					cmg.channel.stopTyping();
-					cmg.channel.startTyping();
-					if (typeof args[2] === undefined) {
-						cmg.reply(res.warnChannel.undefined)
-						cmg.channel.stopTyping();
-						break;
-					} else {
-						var givenChannel = args[2].substring(0, args[2].length - 1).substring(2);
-						var channelExists = false;
-						cmg.guild.channels.cache.forEach((ch)=>{
-							if (ch.id === givenChannel) {
-								channelExists = true;
-							}
-						})
-						if (channelExists === false){
-							cmg.channel.stopTyping();
-							cmg.reply(res.warnChannel.invalid)
-							break;
-						} else {
-							try {
-								var msg2edit = await cmg.channel.send("Processing...");
-								SB.client.settings.warnMod.set(cmg.guild.id,'warnLogChannel',givenChannel)
-								msg2edit.edit(res.warnChannel.edited.replace("%channel%",`<#${givenChannel}>`));
-							} catch(e){
-								console.error(e);
-								cmg.channel.send(res.setup.error);
-							}
-							cmg.channel.stopTyping();
-						}
-					}
+					require("./settings/warnChannel.js")(cmg);
 					break;
 				default:
-
+					message.reply(res.setup.invalidCommand)
 					break;
 			}
 		}
