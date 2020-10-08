@@ -1,6 +1,3 @@
-const Discord = SB.modules.node.discord;
-const { MessageEmbed } = require("discord.js");
-const prefix = SB.prefix.default;
 const dns = require("dns");
 const serverJSON = require("./servers.json");
 const serverCache = require("./servers.json");
@@ -33,6 +30,10 @@ async function populateCache(givenEmbed) {
 }
 
 module.exports = async function() {
+	const Discord = SB.modules.node.discord;
+	const { MessageEmbed } = require("discord.js");
+	const prefix = SB.prefix.default;
+
 
     SB.client.on('message', async message => {
         if (message.author.bot) return;
