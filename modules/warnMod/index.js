@@ -17,18 +17,9 @@ var responses = {
 	}
 };
 
-const defaultSettings = {
-	channels: {
-		warnLog: 0
-	},
-	warn: {
-		limit: 3,
-		roles: []
-	},
-	settingsChanged: false
-}
-module.exports = async function() {
 
+
+module.exports = async function() {
     SB.client.on('message', async message => {
         if (message.author.bot) return;
         if (message.content.indexOf(prefix) !== 0) return;
@@ -117,11 +108,10 @@ module.exports = async function() {
 					}
                     break;
 				case "setup":
-					SB.modules.libraries.forEach((lb)=>{
-						if(lb.name === "setupManager") {
-							
-						}
-					})
+					if (args[1] === "warn") {
+						message.channel.stopTyping();
+						require("./settingManager.js").setup(message);
+					}
 					break;
             }
         } catch (err) {
