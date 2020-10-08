@@ -109,3 +109,4 @@ token.json
 package-lock.json
 .DS_Store
 ._.DS_Store
+data/
