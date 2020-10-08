@@ -1,7 +1,3 @@
-const prefix = SB.prefix.default;
-const Discord = require("discord.js");
-var pref = SB.prefrences
-
 var responses = {
 	kickedFromWarnLimit: {
 		channel: "$user$ has been kicked due to exceding the warn limit.",
@@ -20,6 +16,14 @@ var responses = {
 
 
 module.exports = async function() {
+	const prefix = SB.prefix.default;
+	const Discord = require("discord.js");
+	var pref = SB.prefrences;
+
+	if (SB.client.settings.warnMod === undefined) {
+		require("./settingManager.js").moduleInit()
+	}
+
     SB.client.on('message', async message => {
         if (message.author.bot) return;
         if (message.content.indexOf(prefix) !== 0) return;
@@ -28,11 +32,11 @@ module.exports = async function() {
 
 		//filter(string,currentWarn,warnReason,MGR)
 		function filter(string,currentWarn,warnReason,MGR) {
-			return string.replace("$server$",message.guild.name)
-						.replace("$warnedBy$",`<@${message.author.id}>`)
-						.replace("$user$",`<@${MGR.id}>`)
-						.replace("$chancesLeft$",3-currentWarn)
-						.replace("$warnReason$",warnReason)
+			return string.replace("$server$",		message.guild.name)
+						 .replace("$warnedBy$",		`<@${message.author.id}>`)
+						 .replace("$user$",			`<@${MGR.id}>`)
+						 .replace("$chancesLeft$",	3 - currentWarn)
+						 .replace("$warnReason$",	warnReason)
 		}
 
         try {
@@ -59,7 +63,7 @@ module.exports = async function() {
 
 					var currentWarn=0;
 					var targetUser = message.mentions.users.first();
-					var targetUser.warns = []
+					targetUser.warns = []
 					var serverWarnRoles=[];
 					var warnLimit = SB.client.settings.ensure()
 
@@ -108,14 +112,18 @@ module.exports = async function() {
 					}
                     break;
 				case "setup":
-					if (args[1] === "warn") {
-						message.channel.stopTyping();
-						require("./settingManager.js").setup(message);
+					if (args[0] === "warn") {
+						if (message.member.hasPermission("ADMINISTRATOR")) {
+							message.channel.stopTyping();
+							require("./settingManager.js").setup(message);
+						} else {
+							message.reply("You do not have the administrator permission.");
+						}
 					}
 					break;
             }
         } catch (err) {
-			SB.libraries.forEach(async (m) => {
+			SB.modules.libraries.forEach(async (m) => {
 				if (m.name === "developer_alerts") {
 					let tmpRequire = require(`./../../${m.location}/${m.main}`).userspaceError(message, err);
 				}
