@@ -1,17 +1,4 @@
-var responses = {
-	kickedFromWarnLimit: {
-		channel: "$user$ has been kicked due to exceding the warn limit.",
-		userKicked: "You have been kicked from $server$ by $warnedBy$ due to exceding the warn limit, send them a message to get back in the server.",
-		auditReason: "Exceded Warn Limit [from $warnedBy$] $warnReason$",
-	},
-	warned: {
-		channel: "$user$ has been warned, you have $chancesLeft$ chances left.",
-		userWarned: "You have been warned on $server$, you have $chancesLeft$ chances left.\r\nIf you disagree with this action please message the moderators in <#754018959036121148>.",
-	},
-	error: {
-		settingsNotChanged: "Settings have not been changed, please refer to the SeedBot Partner Handbook that was given to you with the bot invite."
-	}
-};
+var responses = require("./response.json");
 
 
 
@@ -20,9 +7,7 @@ module.exports = async function() {
 	const Discord = require("discord.js");
 	var pref = SB.prefrences;
 
-	if (SB.client.settings.warnMod === undefined) {
-		require("./settingManager.js").moduleInit()
-	}
+
 
     SB.client.on('message', async message => {
         if (message.author.bot) return;
@@ -30,22 +15,29 @@ module.exports = async function() {
         var args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
 
-		//filter(string,currentWarn,warnReason,MGR)
-		function filter(string,currentWarn,warnReason,MGR) {
+		//filter(string,currentWarn,warnReason,targetUser)
+		function filter(string,currentWarn,warnReason,targetUser) {
 			return string.replace("$server$",		message.guild.name)
 						 .replace("$warnedBy$",		`<@${message.author.id}>`)
-						 .replace("$user$",			`<@${MGR.id}>`)
+						 .replace("$user$",			`<@${targetUser.id}>`)
 						 .replace("$chancesLeft$",	3 - currentWarn)
 						 .replace("$warnReason$",	warnReason)
 		}
 
         try {
+
             switch (command) {
                 case "warn":
-					if (SB.client.settings.get(message.guild.id, settingsChanged) === undefined) {
-						client.settings.ensure(member.guild.id, defaultSettings);
+					console.log(SB.client.settings.warnMod.get(message.guild.id,'warnLogChannel'))
+					if (SB.client.settings.warnMod.get(message.guild.id, 'settingsChanged') == false) {
+						require("./settingManager.js").init(message.guild.id);
+						message.channel.send(responses.error.settingsNotChanged);
+						break;
 					}
-                    var MGR = message.mentions.users.first();
+					if (SB.client.settings.warnMod.get(message.guild.id,'warnLogChannel') == 0) {
+						message.channel.send(responses.error.warnLogChannelUndefined);
+						break;
+					}
 					var warnReason = "";
 					if (args[1] === undefined) {
 						// No reason given
@@ -67,14 +59,14 @@ module.exports = async function() {
 					var serverWarnRoles=[];
 					var warnLimit = SB.client.settings.ensure()
 
-					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: false, checkOwner: false })) return message.reply("you don't have permission bossman");
+					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: true, checkOwner: true })) return message.reply(res.error.invalidPermissions);
 					message.guild.roles.cache.forEach((r)=>{
 						if (r.name.search(/(warn|warning)(| )[1-3]/i)>=0) {
 							serverWarnRoles[r.name.substr(r.name.length - 1)-1]=
 								{name:r.name,id:r.id,value:r.name.substr(r.name.length-1)};
 						}
 					})
-					message.guild.member(MGR).roles.cache.forEach((r)=>{
+					message.guild.member(targetUser).roles.cache.forEach((r)=>{
 						if (r.name.search(/(warn|warning)(| )[1-3]/i)>=0) {
 							whatWarnsUserHas[r.name.substr(r.name.length - 1)-1]=
 								{name:r.name,id:r.id,value:r.name.substr(r.name.length-1)};
@@ -86,21 +78,21 @@ module.exports = async function() {
 						}
 					})
 					if (currentWarn == 3){
-						message.channel.send(`:no_entry_sign: <@${MGR.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
+						message.channel.send(`:no_entry_sign: <@${targetUser.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
 
 					} else {
 						var warnToGive = (parseInt(currentWarn) + 1).toString();
 						serverWarnRoles.forEach((r)=>{
 							if (r.name.charAt(r.name.length-1)==warnToGive.toString()){
 								var rtg = message.guild.roles.cache.find(ra=>ra.id==r.id)
-								message.guild.member(MGR).roles.add(rtg).then(()=>{
+								message.guild.member(targetUser).roles.add(rtg).then(()=>{
 									var warnLogContent = new Discord.MessageEmbed()
-										.setTitle(`${MGR.username} was warned`)
-										.setDescription(`<@${MGR.id}> was warned by <@${message.author.id}>\r\n**reason** - ${warnReason}`)
+										.setTitle(`${targetUser.username} was warned`)
+										.setDescription(`<@${targetUser.id}> was warned by <@${message.author.id}>\r\n**reason** - ${warnReason}`)
 										.setTimestamp()
 										.setFooter(`warned by ${message.author.username}#${message.author.discriminator}`);
-									message.reply(filter(responses.warned.channel,currentWarn,warnReason,MGR))
-									SB.client.users.cache.get(MGR.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,MGR))
+									message.reply(filter(responses.warned.channel,currentWarn,warnReason,targetUser))
+									SB.client.users.cache.get(targetUser.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,targetUser))
 									message.guild.channels.cache.forEach((cj)=>{
 										if (cj.name==="warn-log") {
 											SB.client.channels.cache.get(cj.id).send(warnLogContent);
@@ -134,6 +126,10 @@ module.exports = async function() {
 
 
     SB.client.on('ready', async () => {
+		console.log(typeof SB.client.settings.warnMod)
+		if (SB.client.settings.warnMod === undefined) {
+			require("./settingManager.js").moduleInit()
+		}
         SB.con.module.bot.loaded("Warn Utilities");
     })
 }
