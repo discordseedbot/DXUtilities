@@ -1,5 +1,6 @@
 const prefix = SB.prefix.default;
-const Discord = require("discord.js")
+const Discord = require("discord.js");
+var pref = SB.prefrences
 
 var responses = {
 	kickedFromWarnLimit: {
@@ -10,10 +11,22 @@ var responses = {
 	warned: {
 		channel: "$user$ has been warned, you have $chancesLeft$ chances left.",
 		userWarned: "You have been warned on $server$, you have $chancesLeft$ chances left.\r\nIf you disagree with this action please message the moderators in <#754018959036121148>.",
+	},
+	error: {
+		settingsNotChanged: "Settings have not been changed, please refer to the SeedBot Partner Handbook that was given to you with the bot invite."
 	}
 };
 
-
+const defaultSettings = {
+	channels: {
+		warnLog: 0
+	},
+	warn: {
+		limit: 3,
+		roles: []
+	},
+	settingsChanged: false
+}
 module.exports = async function() {
 
     SB.client.on('message', async message => {
@@ -34,14 +47,30 @@ module.exports = async function() {
         try {
             switch (command) {
                 case "warn":
-                    var MGR = message.mentions.users.first();
-					var warnReason = " ";
-					if (args[1] !== undefined) {
-						warnReason = args[1];
+					if (SB.client.settings.get(message.guild.id, settingsChanged) === undefined) {
+						client.settings.ensure(member.guild.id, defaultSettings);
 					}
+                    var MGR = message.mentions.users.first();
+					var warnReason = "";
+					if (args[1] === undefined) {
+						// No reason given
+						warnReason = "No Reason";
+					}
+					args.forEach((ag)=>{
+						if (ag !== args[0]) {
+							warnReason+=ag;
+						}
+					})
+
+					if (SB.client.settings.get(message.guild.id,settingsChanged) === false) {
+						message.channel.send(responses.error.settingsNotChanged)
+					}
+
 					var currentWarn=0;
-					var whatWarnsUserHas=[];
+					var targetUser = message.mentions.users.first();
+					var targetUser.warns = []
 					var serverWarnRoles=[];
+					var warnLimit = SB.client.settings.ensure()
 
 					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: false, checkOwner: false })) return message.reply("you don't have permission bossman");
 					message.guild.roles.cache.forEach((r)=>{
@@ -57,21 +86,12 @@ module.exports = async function() {
 						}
 					})
 					whatWarnsUserHas.forEach((d)=>{
-						switch(parseInt(d.value)){
-							case 1:
-							case 2:
-							case 3:
-							currentWarn=d.value;
-							break;
+						if (typeof d.value == number) {
+							currentWarn = d.value;
 						}
 					})
 					if (currentWarn == 3){
 						message.channel.send(`:no_entry_sign: <@${MGR.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
-						/*if (!message.guild.member(MGR).kickable) return message.reply("can't kick!");
-							message.guild.member(MGR).kick(filter(reasons.kickedFromWarnLimit.auditReason,currentWarn,warnReason,MGR)).then((km)=>{
-							message.channel.send(responses.kickedFromWarnLimit.channel);
-							SB.client.users.cache.get(MGR.id).send(filter(responses.kickedFromWarnLimit.userKicked,currentWarn,warnReason,MGR));
-						})*/
 
 					} else {
 						var warnToGive = (parseInt(currentWarn) + 1).toString();
@@ -96,6 +116,13 @@ module.exports = async function() {
 						})
 					}
                     break;
+				case "setup":
+					SB.modules.libraries.forEach((lb)=>{
+						if(lb.name === "setupManager") {
+							
+						}
+					})
+					break;
             }
         } catch (err) {
 			SB.libraries.forEach(async (m) => {
