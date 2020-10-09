@@ -33,7 +33,6 @@ module.exports = async function(message){
 				func.write(message.guild.id,'warnLogChannel',givenChannel)
 				SB.client.channels.cache.get(givenChannel).send(res.warnChannel.channelReserved.replace("%timeReserved%",new Date().toISOString()));
 				msg2edit.edit(res.warnChannel.edited.replace("%channel%",`<#${givenChannel}>`));
-				func.write(message.guild.id,'settingsChanged','true')
 			} catch(e){
 				console.error(e);
 				message.channel.send(res.setup.error);
