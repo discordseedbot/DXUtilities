@@ -263,10 +263,6 @@ if (!coreFound) {
 SB.modules.node.discord = require("discord.js");
 global.SB.client = new SB.modules.node.discord.Client();
 
-// Declare Enmap
-SB.modules.node.enmap = require("enmap")
-SB.client.settings = {};
-
 setTimeout(()=>{
 	SB.client.login(SB.token.discord).catch((e)=>{
 		console.log(e);
@@ -291,6 +287,7 @@ setTimeout(()=>{
 		if (!SB.parameters.debugMode) {
 			console.clear()
 			SB.modules.node.signale.complete("Discord Bot connected at", new Date().toISOString());
+			SB.modules.node.signale.info(`Logged in as "${SB.client.user.username}"`)
 		} else {
 			console.log(`- - - - - Discord Bot Logged In as "${SB.client.user.username}" - - - - -`);
 			console.log("Logged in at", new Date().toISOString())
