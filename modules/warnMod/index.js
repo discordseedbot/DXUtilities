@@ -122,9 +122,7 @@ module.exports = async function() {
 
 
     SB.client.on('ready', async () => {
-		if (SB.client.settings.warnMod === undefined) {
-			require("./settingManager.js").moduleInit()
-		}
+		require("./settingManager.js").moduleInit()
         SB.con.module.bot.loaded("Warn Utilities");
     })
 }
