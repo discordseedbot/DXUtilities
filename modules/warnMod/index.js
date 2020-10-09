@@ -126,7 +126,6 @@ module.exports = async function() {
 
 
     SB.client.on('ready', async () => {
-		console.log(typeof SB.client.settings.warnMod)
 		if (SB.client.settings.warnMod === undefined) {
 			require("./settingManager.js").moduleInit()
 		}
