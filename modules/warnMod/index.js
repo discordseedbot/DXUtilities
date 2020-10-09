@@ -28,15 +28,10 @@ module.exports = async function() {
 
             switch (command) {
                 case "warn":
-					console.log(SB.client.settings.warnMod.get(message.guild.id,'warnLogChannel'))
-					if (SB.client.settings.warnMod.get(message.guild.id, 'settingsChanged') == false) {
-						require("./settingManager.js").init(message.guild.id);
+					if (require("./functions.js").read(message.guild.id,'warnLogChannel') === undefined) {
+						require("./functions.js").guildExists(message.guild.id)
 						message.channel.send(responses.error.settingsNotChanged);
-						break;
-					}
-					if (SB.client.settings.warnMod.get(message.guild.id,'warnLogChannel') == 0) {
-						message.channel.send(responses.error.warnLogChannelUndefined);
-						break;
+						return;
 					}
 					var warnReason = "";
 					if (args[1] === undefined) {
@@ -45,19 +40,20 @@ module.exports = async function() {
 					}
 					args.forEach((ag)=>{
 						if (ag !== args[0]) {
-							warnReason+=ag;
+							warnReason+=`${ag} `;
 						}
 					})
 
-					if (SB.client.settings.get(message.guild.id,settingsChanged) === false) {
+					if (require("./functions.js").read(message.guild.id,'warnLogChannel') === undefined) {
 						message.channel.send(responses.error.settingsNotChanged)
+						return;
 					}
 
 					var currentWarn=0;
 					var targetUser = message.mentions.users.first();
 					targetUser.warns = []
 					var serverWarnRoles=[];
-					var warnLimit = SB.client.settings.ensure()
+					var warnLimit = require("./functions.js").read(message.guild.id,'warnLimit') || 3;
 
 					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: true, checkOwner: true })) return message.reply(res.error.invalidPermissions);
 					message.guild.roles.cache.forEach((r)=>{
@@ -68,16 +64,16 @@ module.exports = async function() {
 					})
 					message.guild.member(targetUser).roles.cache.forEach((r)=>{
 						if (r.name.search(/(warn|warning)(| )[1-3]/i)>=0) {
-							whatWarnsUserHas[r.name.substr(r.name.length - 1)-1]=
+							targetUser.warns[r.name.substr(r.name.length - 1)-1]=
 								{name:r.name,id:r.id,value:r.name.substr(r.name.length-1)};
 						}
 					})
-					whatWarnsUserHas.forEach((d)=>{
-						if (typeof d.value == number) {
+					targetUser.warns.forEach((d)=>{
+						if (!isNaN(d.value)) {
 							currentWarn = d.value;
 						}
 					})
-					if (currentWarn == 3){
+					if (currentWarn == warnLimit){
 						message.channel.send(`:no_entry_sign: <@${targetUser.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
 
 					} else {
@@ -94,7 +90,7 @@ module.exports = async function() {
 									message.reply(filter(responses.warned.channel,currentWarn,warnReason,targetUser))
 									SB.client.users.cache.get(targetUser.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,targetUser))
 									message.guild.channels.cache.forEach((cj)=>{
-										if (cj.name==="warn-log") {
+										if (cj.id == require("./functions").read(message.guild.id,'warnLogChannel') || cj.name==="warn-log") {
 											SB.client.channels.cache.get(cj.id).send(warnLogContent);
 										}
 									})
