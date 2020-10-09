@@ -26,12 +26,10 @@ mex.write = async function (guildID,data,value){
 				return false;
 			}
 			const file = await JSON.parse(d);
-			console.log(file)
 			if (file[guildID][data] === undefined) {
 				file[guildID][data] = "";
 			}
 			file[guildID][data] = value
-			console.log(file)
 			fs.writeFile(storageLocation,JSON.stringify(file),(err)=>{
 				if (err) throw err;
 				return ("Written data.");
@@ -42,9 +40,9 @@ mex.write = async function (guildID,data,value){
 	}
 }
 
-mex.read = async function(guildID,data) {
+mex.read = function(guildID,data) {
 	try {
-		const file = await readJSON();
+		const file = require(`./../../${storageLocation}`);
 		return file[guildID][data];
 	} catch(e) {
 		console.error(e);
