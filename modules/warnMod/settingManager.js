@@ -1,6 +1,8 @@
 var me = {};
 
 var res = require("./response.json")
+const fs = require("fs");
+var storageName = SB.prefrences.warnMod.storageLocation;
 
 me = function (message){
 
@@ -23,32 +25,13 @@ me.OTPGen = function(length) {
 
 me.moduleInit = function() {
 	try {
-		var Enmap = SB.modules.node.enmap;
-		SB.client.settings.warnMod = [];
-
-		SB.client.settings.warnMod = new Enmap({
-			name: "warnModSettings",
-			fetchAll: true,
-			autoFetch: true,
-			cloneLevel: 'deep'
-		});
-		return true;
-	} catch(e){
-		console.error(e);
-		return false;
-	}
-}
-
-me.init = function(guildID) {
-	try {
-		var Enmap = SB.modules.node.enmap;
-		SB.client.settings.warnMod.ensure(guildID,{
-			warnLogChannel: 0,
-			warnLimit: 3,
-			warnRoles: [],
-			settingsChanged: false
+		var storageExists = fs.exists(storageName,(e)=>{
+			return e;
 		})
-		return true;
+		if (!storageExists) {
+			require("./functions.js").initialize()
+			return true;
+		}
 	} catch(e){
 		console.error(e);
 		return false;
@@ -67,13 +50,16 @@ me.setup = async function(message) {
 		message.channel.stopTyping();
 	}
 	SB.client.on('message',async (cmg)=>{
-		var prefix = `<@!${SB.client.user.id}> `;
+		var prefix = `${SB.prefix.default}setup `;
         var args = cmg.content.slice(prefix.length).trim().split(/ +/g);
 
 		if (args[0] === customIdentifiyer) {
 			switch(args[1].toLowerCase()) {
 				case "warnchannel":
 					require("./settings/warnChannel.js")(cmg);
+					break;
+				case "warnrole":
+					require("./settings/warnRole.js")(cmg);
 					break;
 				default:
 					message.reply(res.setup.invalidCommand)
