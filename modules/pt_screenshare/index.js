@@ -1,9 +1,9 @@
-const Discord = require("discord.js");
-const { RichEmbed } = require("discord.js");
-const prefix = SB.prefix.default;
-const signale = require("signale");
-
 module.exports = function() {
+	const Discord = require("discord.js");
+	const { RichEmbed } = require("discord.js");
+	const prefix = SB.prefix.default;
+	const signale = require("signale");
+
 	SB.client.on('message',async message => {
 		if (message.author.bot) return;
 		if (message.content.indexOf(prefix) !== 0) return;

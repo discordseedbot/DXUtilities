@@ -21,10 +21,9 @@ module.exports = function() {
         */
 
     })
-const prefix = SB.prefix.default;
+	const prefix = SB.prefix.default;
     SB.client.on('message', async message => {
         if (message.author.bot) return;
-        //console.log("\n" + `[${message.author.id}] - ${message.content}`)
-		//console.log(message.content.slice(prefix.length).trim().split(/ +/g))
+        console.log(`[${message.author.id}] - ${message.content}`)
     })
 }

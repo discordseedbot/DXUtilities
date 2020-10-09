@@ -1,20 +1,13 @@
-const prefix = SB.prefix.default;
-const Discord = require("discord.js")
+var responses = require("./response.json");
 
-var responses = {
-	kickedFromWarnLimit: {
-		channel: "$user$ has been kicked due to exceding the warn limit.",
-		userKicked: "You have been kicked from $server$ by $warnedBy$ due to exceding the warn limit, send them a message to get back in the server.",
-		auditReason: "Exceded Warn Limit [from $warnedBy$] $warnReason$",
-	},
-	warned: {
-		channel: "$user$ has been warned, you have $chancesLeft$ chances left.",
-		userWarned: "You have been warned on $server$, you have $chancesLeft$ chances left.\r\nIf you disagree with this action please message the moderators in <#754018959036121148>.",
-	}
-};
 
 
 module.exports = async function() {
+	const prefix = SB.prefix.default;
+	const Discord = require("discord.js");
+	var pref = SB.prefrences;
+
+
 
     SB.client.on('message', async message => {
         if (message.author.bot) return;
@@ -22,72 +15,82 @@ module.exports = async function() {
         var args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
 
-		//filter(string,currentWarn,warnReason,MGR)
-		function filter(string,currentWarn,warnReason,MGR) {
-			return string.replace("$server$",message.guild.name)
-						.replace("$warnedBy$",`<@${message.author.id}>`)
-						.replace("$user$",`<@${MGR.id}>`)
-						.replace("$chancesLeft$",3-currentWarn)
-						.replace("$warnReason$",warnReason)
+		//filter(string,currentWarn,warnReason,targetUser)
+		function filter(string,currentWarn,warnReason,targetUser) {
+			return string.replace("$server$",		message.guild.name)
+						 .replace("$warnedBy$",		`<@${message.author.id}>`)
+						 .replace("$user$",			`<@${targetUser.id}>`)
+						 .replace("$chancesLeft$",	3 - currentWarn)
+						 .replace("$warnReason$",	warnReason)
 		}
 
         try {
+
             switch (command) {
                 case "warn":
-                    var MGR = message.mentions.users.first();
-					var warnReason = " ";
-					if (args[1] !== undefined) {
-						warnReason = args[1];
+					if (require("./functions.js").read(message.guild.id,'warnLogChannel') === undefined) {
+						require("./functions.js").guildExists(message.guild.id)
+						message.channel.send(responses.error.settingsNotChanged);
+						return;
 					}
-					var currentWarn=0;
-					var whatWarnsUserHas=[];
-					var serverWarnRoles=[];
+					var warnReason = "";
+					if (args[1] === undefined) {
+						// No reason given
+						warnReason = "No Reason";
+					}
+					args.forEach((ag)=>{
+						if (ag !== args[0]) {
+							warnReason+=`${ag} `;
+						}
+					})
 
-					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: false, checkOwner: false })) return message.reply("you don't have permission bossman");
+					if (require("./functions.js").read(message.guild.id,'warnLogChannel') === undefined) {
+						message.channel.send(responses.error.settingsNotChanged)
+						return;
+					}
+
+					var currentWarn=0;
+					var targetUser = message.mentions.users.first();
+					targetUser.warns = []
+					var serverWarnRoles=[];
+					var warnLimit = require("./functions.js").read(message.guild.id,'warnLimit') || 3;
+
+					if (!message.member.hasPermission(["KICK_MEMBERS","MANAGE_ROLES"], { checkAdmin: true, checkOwner: true })) return message.reply(res.error.invalidPermissions);
 					message.guild.roles.cache.forEach((r)=>{
 						if (r.name.search(/(warn|warning)(| )[1-3]/i)>=0) {
 							serverWarnRoles[r.name.substr(r.name.length - 1)-1]=
 								{name:r.name,id:r.id,value:r.name.substr(r.name.length-1)};
 						}
 					})
-					message.guild.member(MGR).roles.cache.forEach((r)=>{
+					message.guild.member(targetUser).roles.cache.forEach((r)=>{
 						if (r.name.search(/(warn|warning)(| )[1-3]/i)>=0) {
-							whatWarnsUserHas[r.name.substr(r.name.length - 1)-1]=
+							targetUser.warns[r.name.substr(r.name.length - 1)-1]=
 								{name:r.name,id:r.id,value:r.name.substr(r.name.length-1)};
 						}
 					})
-					whatWarnsUserHas.forEach((d)=>{
-						switch(parseInt(d.value)){
-							case 1:
-							case 2:
-							case 3:
-							currentWarn=d.value;
-							break;
+					targetUser.warns.forEach((d)=>{
+						if (!isNaN(d.value)) {
+							currentWarn = d.value;
 						}
 					})
-					if (currentWarn == 3){
-						message.channel.send(`:no_entry_sign: <@${MGR.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
-						/*if (!message.guild.member(MGR).kickable) return message.reply("can't kick!");
-							message.guild.member(MGR).kick(filter(reasons.kickedFromWarnLimit.auditReason,currentWarn,warnReason,MGR)).then((km)=>{
-							message.channel.send(responses.kickedFromWarnLimit.channel);
-							SB.client.users.cache.get(MGR.id).send(filter(responses.kickedFromWarnLimit.userKicked,currentWarn,warnReason,MGR));
-						})*/
+					if (currentWarn == warnLimit){
+						message.channel.send(`:no_entry_sign: <@${targetUser.id}> has sinned too much, thus can not be warned anymore. what a cheeky fella.`)
 
 					} else {
 						var warnToGive = (parseInt(currentWarn) + 1).toString();
 						serverWarnRoles.forEach((r)=>{
 							if (r.name.charAt(r.name.length-1)==warnToGive.toString()){
 								var rtg = message.guild.roles.cache.find(ra=>ra.id==r.id)
-								message.guild.member(MGR).roles.add(rtg).then(()=>{
+								message.guild.member(targetUser).roles.add(rtg).then(()=>{
 									var warnLogContent = new Discord.MessageEmbed()
-										.setTitle(`${MGR.username} was warned`)
-										.setDescription(`<@${MGR.id}> was warned by <@${message.author.id}>\r\n**reason** - ${warnReason}`)
+										.setTitle(`${targetUser.username} was warned`)
+										.setDescription(`<@${targetUser.id}> was warned by <@${message.author.id}>\r\n**reason** - ${warnReason}`)
 										.setTimestamp()
 										.setFooter(`warned by ${message.author.username}#${message.author.discriminator}`);
-									message.reply(filter(responses.warned.channel,currentWarn,warnReason,MGR))
-									SB.client.users.cache.get(MGR.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,MGR))
+									message.reply(filter(responses.warned.channel,currentWarn,warnReason,targetUser))
+									SB.client.users.cache.get(targetUser.id).send(filter(responses.warned.userWarned,currentWarn,warnReason,targetUser))
 									message.guild.channels.cache.forEach((cj)=>{
-										if (cj.name==="warn-log") {
+										if (cj.id == require("./functions").read(message.guild.id,'warnLogChannel') || cj.name==="warn-log") {
 											SB.client.channels.cache.get(cj.id).send(warnLogContent);
 										}
 									})
@@ -96,9 +99,19 @@ module.exports = async function() {
 						})
 					}
                     break;
+				case "setup":
+					if (args[0] === "warn") {
+						if (message.member.hasPermission("ADMINISTRATOR")) {
+							message.channel.stopTyping();
+							require("./settingManager.js").setup(message);
+						} else {
+							message.reply("You do not have the administrator permission.");
+						}
+					}
+					break;
             }
         } catch (err) {
-			SB.libraries.forEach(async (m) => {
+			SB.modules.libraries.forEach(async (m) => {
 				if (m.name === "developer_alerts") {
 					let tmpRequire = require(`./../../${m.location}/${m.main}`).userspaceError(message, err);
 				}
@@ -109,6 +122,7 @@ module.exports = async function() {
 
 
     SB.client.on('ready', async () => {
+		require("./settingManager.js").moduleInit()
         SB.con.module.bot.loaded("Warn Utilities");
     })
 }

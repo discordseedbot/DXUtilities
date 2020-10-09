@@ -1,0 +1,27 @@
+{
+	"warnChannel": {
+		"undefined": "No warn channel was given, just do # then the channel name in the command, e.g `@DARiOX Utilities [code] warnChannel #warnLog`",
+		"invalid": "Channel given does not exist!",
+		"edited": "Warn channel has been set to %channel%. Whenever somebody is warned a message will be put in there with a info about their warn. For more information check your Partner Guide.",
+		"channelReserved": "This channel has been reserved for warns in this server.\r\nReserved at %timeReserved%"
+	},
+	"setup": {
+		"ready": "We're ready to setup your server, read the guide (https://github.com/discordseedbot/DXUtilities/warmMod.md). Your SessionID is `%OTP%`",
+		"error": "An internal error occoured, sorry for the inconvenience!",
+		"invalidCommand": "You have given an invalid command, Check how it was typed and try again."
+	},
+	"kickedFromWarnLimit": {
+		"channel": "$user$ has been kicked due to exceding the warn limit.",
+		"userKicked": "You have been kicked from $server$ by $warnedBy$ due to exceding the warn limit, send them a message to get back in the server.",
+		"auditReason": "Exceded Warn Limit [from $warnedBy$] $warnReason$"
+	},
+	"warned": {
+		"channel": "$user$ has been warned, you have $chancesLeft$ chances left.",
+		"userWarned": "You have been warned on $server$, you have $chancesLeft$ chances left.\r\nIf you disagree with this action please message the moderators in <#754018959036121148>."
+	},
+	"error": {
+		"settingsNotChanged": "Settings have not been changed, please refer to the SeedBot Partner Handbook that was given to you with the bot invite.",
+		"warnLogChannelUndefined": "The warn log channel is undefined, Please contact the developers to help you or check your Partner Guide.",
+		"invalidPermissions": "You do not have permission to execute this command. Check your role permissions or buzz off."
+	}
+}
