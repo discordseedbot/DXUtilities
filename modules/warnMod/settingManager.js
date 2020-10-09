@@ -42,14 +42,19 @@ me.setup = async function(message) {
 	message.channel.startTyping();
 	var setupMSG = await message.channel.send("Preparing our side to setup your server, hold tight!");
 	var customIdentifiyer = me.OTPGen(8);
-	if (me.init(message.guild.id)) {
-		setupMSG.edit(res.setup.ready.replace("%OTP%",customIdentifiyer));
-		message.channel.stopTyping();
-	} else {
-		setupMSG.edit(res.error.internalError);
-		message.channel.stopTyping();
-	}
+	var SHOUDISTAYORSHOULDIGOQUESTIONMARK = require("./functions.js").guildExists(message.guild.id)
+	message.channel.startTyping();
+	setTimeout(()=>{
+		if (SHOUDISTAYORSHOULDIGOQUESTIONMARK) {
+			setupMSG.edit(res.setup.ready.replace("%OTP%",customIdentifiyer));
+			message.channel.stopTyping();
+		} else {
+			setupMSG.edit(res.error.internalError);
+			message.channel.stopTyping();
+		}
+	},5000)
 	SB.client.on('message',async (cmg)=>{
+        if (message.author.bot) return;
 		var prefix = `${SB.prefix.default}setup `;
         var args = cmg.content.slice(prefix.length).trim().split(/ +/g);
 
