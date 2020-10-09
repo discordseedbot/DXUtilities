@@ -4,8 +4,9 @@
 	"description": "Utility Discord Bot for DARiOX Partnered Servers",
 	"main": "index.js",
 	"scripts": {
-		"test": "node . --debug",
-		"start": "node ."
+		"start": "node .",
+		"debug": "node . --debug",
+		"build": "node . --buildMode"
 	},
 	"repository": {
 		"type": "git",
@@ -27,7 +28,6 @@
 	"dependencies": {
 		"discord.js": "^12.2.0",
 		"dns": "^0.2.2",
-		"enmap": "^5.8.0",
 		"fs": "0.0.1-security",
 		"inquirer": "^7.3.3",
 		"minecraft-server-util": "^3.0.3",
