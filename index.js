@@ -292,7 +292,7 @@ setTimeout(()=>{
 			console.clear()
 			SB.modules.node.signale.complete("Discord Bot connected at", new Date().toISOString());
 		} else {
-			console.log("- - - - - Discord Bot Logged In - - - - -");
+			console.log(`- - - - - Discord Bot Logged In as "${SB.client.user.username}" - - - - -`);
 			console.log("Logged in at", new Date().toISOString())
 		}
 	});
