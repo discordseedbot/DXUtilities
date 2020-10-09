@@ -44,7 +44,7 @@
 	},
     "tokenManager": {
         "enviromentVariable": false,
-        "tokenLocation": "aboveroot"
+        "tokenLocation": "root"
     },
 	"warnMod": {
 		"storageLocation": "data/storage_warnMod.json"
