@@ -10,17 +10,32 @@ function readJSON(){
 	})
 }
 
+function writeJSONData(dataToWrite){
+	dataToWrite = JSON.stringify(dataToWrite)
+	fs.writeFile(storageLocation,dataToWrite,(e)=>{
+		if (e) throw e;
+		return true;
+	})
+}
+
 mex.write = async function (guildID,data,value){
 	try {
-		const file = await readJSON();
-		if (eval(`file[${guildID}].data`) === undefined) {
-			eval(`file[${guildID}].data = {}`)
-		}
-		eval(`file[${guildID}].${data} = ${value}`);
-
-		fs.writeFile(storageLocation,JSON.stringify(file),(err)=>{
-			if (err) throw err;
-			return ("Written data.");
+		fs.readFile(storageLocation,'utf8',async (e,d)=>{
+			if (e) {
+				throw e;
+				return false;
+			}
+			const file = await JSON.parse(d);
+			console.log(file)
+			if (file[guildID][data] === undefined) {
+				file[guildID][data] = "";
+			}
+			file[guildID][data] = value
+			console.log(file)
+			fs.writeFile(storageLocation,JSON.stringify(file),(err)=>{
+				if (err) throw err;
+				return ("Written data.");
+			})
 		})
 	} catch (e) {
 		console.error(e)
@@ -30,27 +45,43 @@ mex.write = async function (guildID,data,value){
 mex.read = async function(guildID,data) {
 	try {
 		const file = await readJSON();
-		var retval = await eval(`file[${guildID}].${data}`);
-		return retval;
+		return file[guildID][data];
 	} catch(e) {
 		console.error(e);
 	}
 }
 
+mex.wipe = async function() {
+	console.log("Deleting warnMod Storage");
+	fs.unlink(storageLocation,(e)=>{
+		if(e) throw e;
+		console.log("Deleted warnMod Storage");
+		return;
+	})
+}
+
+mex.guildExists = async function(guildID) {
+	fs.readFile(storageLocation,'utf8',async (e,d)=>{
+		if (e) {
+			throw e;
+			return false;
+		}
+		var file = await JSON.parse(d)
+		if (file[guildID] === undefined) {
+			file[guildID] = {}
+			writeJSONData(file);
+		}
+		return true;
+	})
+}
+
 mex.initialize = async function() {
-	if (fs.existsSync(storageLocation)) {
-		// storage exists, we delete the file
-		console.log("Deleting warnMod Storage");
-		fs.unlink(storageLocation,(e)=>{
-			if(e) throw e;
-			console.log("Deleted warnMod Storage");
-		})
-	} else {
-		// storage dose not exist, create file
-		var outFile = [];
+	if (!fs.existsSync(storageLocation)) {
+		var outFile = {};
 		fs.writeFile(storageLocation,JSON.stringify(outFile),(e)=>{
 			if (e) throw e;
 			console.log("Created warnLog Storage");
+			return;
 		})
 	}
 }
