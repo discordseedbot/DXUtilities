@@ -42,6 +42,16 @@
 			"230485481773596672"
 		]
 	},
+	"moderation": {
+		"override": {
+			"543016052456685578": [
+				"697426350335852636"
+			],
+			"423433970810748960": [
+				"424465888817709056"
+			]
+		}
+	},
     "tokenManager": {
         "enviromentVariable": false,
         "tokenLocation": "root"
