@@ -10,15 +10,28 @@ module.exports = function() {
 		const command = args.shift().toLowerCase();
 
 		try {
+			var override = false;
+			console.log(SB.prefrences.moderation.override[message.guild.id])
+			console.log(message.guild.members)
+			SB.prefrences.moderation.override[message.guild.id].forEach((pf)=>{
+				message.guild.members.cache.forEach((mb)=>{
+					mb._roles.forEach((r)=>{
+						if (r.id == pf) {
+							override = true
+						}
+					})
+				})
+			})
 			switch (command) {
 				case 'kick':
 				case 'ban':
+				case 'pardon':
 				case 'purge':
-					require(`./${command.toLowerCase()}.js`)(message,args);
+					require(`./${command.toLowerCase()}.js`)(message,override);
 					break;
 			}
 		} catch(err) {
-			SB.libraries.forEach(async (m) => {
+			SB.modules.libraries.forEach(async (m) => {
 				if (m.name === "developer_alerts") {
 					let tmpRequire = require(`./../../${m.location}/${m.main}`).userspaceError(message, err);
 					console.error(err)

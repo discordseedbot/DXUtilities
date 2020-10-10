@@ -1,18 +1,35 @@
 const Discord = require("discord.js");
 const { RichEmbed } = require("discord.js");
 
-module.exports = function(message,args) {
-	let reason = args.slice(1).join(' ');
+module.exports = function(message,override) {
+	var args = message.content.slice(SB.prefix.default.length).trim().split( / +/g);
+	let userToBan = message.mentions.users.first() || message.guild.members.cache.get(args[1]).user;
+	var reason = "";
+	args.forEach((ag)=>{
+		switch (ag) {
+			case args[0]:
+			case args[1]:
+				break;
+			default:
+				reason+=`${ag} `;
+				break;
+		}
+	})
+	console.log(args);
 	let banReason = reason;
-	let userToBan = message.mentions.users.first();
 	if (reason.length < 1) { message.reply('You must supply a reason for the ban.'); return false; }
 	if (userToBan === undefined) { message.reply('You must mention someone to ban them.'); return false; }
 
 	if (!message.guild.member(userToBan).bannable){ message.reply('I cannot ban that member'); return false; };
-	if (!message.member.hasPermission('BAN_MEMBERS')) {message.reply('You do not have permissions to ban.'); return false;}
+	if (!override) {
+		if (!message.member.hasPermission('BAN_MEMBERS')) {
+			return message.reply('You do not have permissions to ban.');
+		}
+	}
+
 	if (!message.guild.me.hasPermission('BAN_MEMBERS')) {message.reply("I don't have permission to ban!"); return false;}
-	message.guild.member(message.mentions.users.first()).ban({reason: banReason}).then((member) => {
-		bannedUserID = message.mentions.users.first().id;
+	message.guild.member(userToBan).ban({reason: banReason}).then((member) => {
+		bannedUserID = userToBan.id;
 
 		message.channel.send({embed: {
 			color: 770000,
