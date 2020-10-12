@@ -4,9 +4,6 @@ var res = require("./response.json")
 const fs = require("fs");
 var storageName = SB.prefrences.warnMod.storageLocation;
 
-me = function (message){
-
-}
 
 me.OTPGen = function(length) {
 	if (typeof length != 'number') {
