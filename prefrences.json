@@ -52,9 +52,20 @@
 			]
 		}
 	},
-    "tokenManager": {
-        "enviromentVariable": false,
-        "tokenLocation": "root"
+    "core": {
+    	"stats": {
+    		"timer": 600,
+    		"loginRetryTimer": 1
+    	},
+    	"tokenManager": {
+    		"enviromentVariable": false,
+    		"tokenLocation": "aboveRoot"
+    	},
+    	"localization": {
+    		"name": "DARiOX Utilities",
+    		"website": "https://seedbot.xyz",
+    		"contact": "contact@dariox.club"
+    	}
     },
 	"warnMod": {
 		"storageLocation": "data/storage_warnMod.json"
