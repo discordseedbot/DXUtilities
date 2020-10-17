@@ -39,13 +39,13 @@ global.SB = {
 	libraries: {},
 	modules: {"node":{}},
 	client: () => {
-		return new Error("Client has not been, something has gone wrong with your module or the loader.");
+		return new Error("Client has not been initialized, something has gone wrong with your module or the loader.");
 	},
 	core: () => {
-		return new Error("Core Module has not been. There might be something wrong with `/index.js` or with the core module itself.");
+		return new Error("Core Module has not been initialized. There might be something wrong with `/index.js` or with the core module itself.");
 	},
 	buildTools: () => {
-		return new Error("BuildMode is not enabled. Please read documentation for farther knowledge.")
+		return new Error("buildTools is not declared. Please read documentation for farther knowledge.")
 	},
 };
 //			Check if SeedBot was launched in DebugMode or buildMode,
@@ -85,14 +85,10 @@ if (!SB.parameters.safeMode) {
 			}
 		}
 	}
+
+	// Disable debug output when not in debug mode
 	global.console.debug = function(){
-		for (i=0;i<arguments.length;i++){
-			try {
-				process.stdout.write(`${formatOutput(arguments[i],"debug")}\r\n`);
-			} catch (e){
-				throw e;
-			}
-		}
+		return;
 	}
 	global.console.warn = function(){
 		for (i=0;i<arguments.length;i++){
@@ -124,7 +120,6 @@ if (!fs.existsSync("./.buildTools.js") && SB.parameters.buildMode) {
 			SB.buildTools = require("./.buildTools.js");
 		} catch(e) {
 			console.error(e);
-			process.exit(10);
 		}
 	}
 }
@@ -145,7 +140,7 @@ try {
 }
 
 //			Clear console if debugMode is not set.
-if (!SB.parameters.debugMode) {
+if (!SB.parameters.safeMode) {
 	console.clear();
 }
 function getDirectories(path) {
