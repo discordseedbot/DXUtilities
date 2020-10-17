@@ -52,10 +52,21 @@
 			]
 		}
 	},
-    "tokenManager": {
-        "enviromentVariable": false,
-        "tokenLocation": "root"
-    },
+	"core": {
+		"stats": {
+			"timer": 600,
+			"loginRetryTimer": 1
+		},
+		"tokenManager": {
+			"enviromentVariable": false,
+			"tokenLocation": "aboveRoot"
+		},
+		"localization": {
+			"name": "SeedBot",
+			"website": "https://seedbot.xyz",
+			"contact": "contact@dariox.club"
+		}
+	},
 	"warnMod": {
 		"storageLocation": "data/storage_warnMod.json"
 	}
