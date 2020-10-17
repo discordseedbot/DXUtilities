@@ -12,7 +12,6 @@ function isIP(ipaddress) {
 
 serverJSON.forEach((sC)=>{
 	var isDomain = !isIP(sC.address);
-	console.log(JSON.stringify(sC,null,"\t"));
 	var ipv4 = "";
 
 	dns.lookup(sC.address, (err, address, family) => {
@@ -24,6 +23,5 @@ serverJSON.forEach((sC)=>{
 		if (sC.game === "source_engine") {
 			finalField+= `\r\n[Connect](steam://connect/${ipv4}:${sC.port})`;
 		}
-		console.log(finalField)
 	},500)
 })
