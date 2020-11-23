@@ -31,6 +31,7 @@
 		"fs": "0.0.1-security",
 		"inquirer": "^7.3.3",
 		"minecraft-server-util": "^3.0.3",
+		"sbpkg_music": "^13.9.19",
 		"seedbot_addonmusic": "^13.9.15",
 		"signale": "^1.4.0",
 		"ytpl": "^1.0.0",
