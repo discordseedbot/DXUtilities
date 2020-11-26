@@ -1,12 +1,8 @@
 module.exports = {
 	prefix: {
-		default: "s!",
-		dev: "s~",
-		music: "s?",
-		math: "s!math",
-		dmoj: "s!dmoj",
-		youtube: "s!yt"
-	},
+        default: "+",
+		music: "+m"
+    },
 	core: {
 		stats: {
 			timer: 600,
