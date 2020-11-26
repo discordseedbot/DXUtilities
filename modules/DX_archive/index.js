@@ -85,10 +85,10 @@ module.exports = async function() {
                     break;
             }
         } catch (err) {
+			console.error(err);
 			SB.libraries.forEach(async (m) => {
 				if (m.name === "developer_alerts") {
 					require(`./../../${m.location}/${m.main}`).userspaceError(message, err);
-					console.error(err);
 				}
 			})
         }
