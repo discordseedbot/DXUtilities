@@ -17,7 +17,7 @@ module.exports = function() {
 					break;
 			}
 		} catch(err){
-			SB,libraries.forEach(async (m) => {
+			SB.libraries.forEach(async (m) => {
 				if (m.name === "developer_alerts") {
 					let tmpRequire = require(`./../../${m.location}/${m.main}`).userspaceError(message,err);
 				}

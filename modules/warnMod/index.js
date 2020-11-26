@@ -1,7 +1,4 @@
 var responses = require("./response.json");
-
-
-
 module.exports = async function() {
 	const prefix = SB.prefix.default;
 	const Discord = require("discord.js");

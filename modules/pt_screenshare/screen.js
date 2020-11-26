@@ -6,8 +6,8 @@ const prefix = SB_CoreLibrary.prefix().default;
 module.exports.cmd = function(message) {
 	if (message.member.voice.channel === undefined) { message.reply("Plesae Join a Voice Channel.") } else {;
 		var currentGuildID = message.guild.id;
-		var.voice.channelID = message.member.voice.channel.id;
-		var screensharelink = "https://discordapp.com/channels/"+currentGuildID+"/".voice.channelID;
+		var channelID = message.member.voice.channel.id;
+		var screensharelink = "https://discordapp.com/channels/"+currentGuildID+"/"+channelID;
 		var response = new Discord.RichEmbed()
 			.setColor(require("./../functions/main.js").randomhexcolor())
 			.setTitle("Voice Chat Screen Share")
