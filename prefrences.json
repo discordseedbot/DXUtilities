@@ -27,7 +27,10 @@
 			{
 				"label": "seeds shed",
 				"id": "358228594918555658",
-				"archive_channel": "736163506696486972"
+				"archive_channel": "736163506696486972",
+				"allowed_roles": [
+					"496895720503377931"
+				]
 			},
 			{
 				"label": "private friends server [the gamer hole]",
@@ -59,7 +62,7 @@
     	},
     	"tokenManager": {
     		"enviromentVariable": false,
-    		"tokenLocation": "aboveRoot"
+    		"tokenLocation": "root"
     	},
     	"localization": {
     		"name": "DARiOX Utilities",
