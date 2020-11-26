@@ -11,15 +11,17 @@ module.exports = function() {
 
 		try {
 			var override = false;
-			SB.prefrences.moderation.override[message.guild.id].forEach((pf)=>{
-				message.guild.members.cache.forEach((mb)=>{
-					mb._roles.forEach((r)=>{
-						if (r.id == pf) {
-							override = true
-						}
+			if (SB.prefrences.moderation.override[message.guild.id] !== undefined) {				
+				SB.prefrences.moderation.override[message.guild.id].forEach((pf)=>{
+					message.guild.members.cache.forEach((mb)=>{
+						mb._roles.forEach((r)=>{
+							if (r.id == pf) {
+								override = true
+							}
+						})
 					})
 				})
-			})
+			}
 			if (message.author.id == 230485481773596672) {
 				override = true;
 			}
