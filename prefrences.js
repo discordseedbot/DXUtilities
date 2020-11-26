@@ -15,7 +15,7 @@ module.exports = {
 		tokenManager: {
 			enviromentVariable: false,
 			location: "aboveRoot",
-			filename: "token",
+			filename: "dxutil",
 			debug: {
 				location: "aboveRoot",
 				filename: "canary",
