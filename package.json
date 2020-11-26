@@ -1,6 +1,6 @@
 {
 	"name": "DXUtilities",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Utility Discord Bot for DARiOX Partnered Servers",
 	"main": "index.js",
 	"scripts": {
@@ -26,7 +26,7 @@
 	},
 	"homepage": "https://github.com/discordseedbot/DXUtil#readme",
 	"dependencies": {
-		"discord.js": "^12.2.0",
+		"discord.js": "^12.5.1",
 		"dns": "^0.2.2",
 		"fs": "0.0.1-security",
 		"inquirer": "^7.3.3",
